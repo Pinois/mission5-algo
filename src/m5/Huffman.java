@@ -48,6 +48,7 @@ public class Huffman {
 		generateCode(root, charCodes, "");
 		// On encode le string ? partir des charCodes g?n?r?s
 		String encodedMessage = encodeMessage(charCodes, text);
+		System.out.println("Message compresse : "+encodedMessage);
 		// On s?rialise le string dans un fichier
 		serializeMessage(encodedMessage, fileNameOutput);
 	}
