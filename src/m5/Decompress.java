@@ -1,10 +1,11 @@
+package m5;
 import java.io.IOException;
 
 public class Decompress {
 
 	public static void main(String[] args) {
 		if (args.length < 2) {
-			System.out.println("SYNTAX : Decompress fichierBinaire fichierNonCompressé");
+			System.out.println("SYNTAX : Decompress fichierBinaire fichierNonCompress?");
 			return;
 		}
 		Huffman huffman = new Huffman();

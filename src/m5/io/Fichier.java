@@ -1,3 +1,4 @@
+package m5.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +15,7 @@ public class Fichier {
 	private char mode = '\0';
 	
 	/**
-	 * Ouvre un fichier en lecture ou en écriture
+	 * Ouvre un fichier en lecture ou en ?criture
 	 * 
 	 * @param nomFichier
 	 * 					Le nom du fichier
@@ -41,12 +42,12 @@ public class Fichier {
 	}
 	
 	/**
-	 * Ecrit une chaine de caractère dans un fichier ouvert en écriture
+	 * Ecrit une chaine de caract?re dans un fichier ouvert en ?criture
 	 * 
 	 * @pre Le fichier doit etre ouvert en ecriture
 	 * 
 	 * @param chaine
-	 * 					La chaine à écrire
+	 * 					La chaine ? ?crire
 	 */
 	public void ecrire(String chaine){
 		if(mode != 'W'){

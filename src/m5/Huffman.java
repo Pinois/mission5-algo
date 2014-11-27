@@ -1,3 +1,4 @@
+package m5;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.Comparator;
@@ -8,13 +9,17 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+import m5.io.Fichier;
+import m5.io.InputBitStream;
+import m5.io.OutputBitStream;
+
 public class Huffman {
 
 	public Huffman() {
 	}
 
 	/**
-	 * Lis le fichier non encodé en input et le compresse dans le fichier output
+	 * Lis le fichier non encod? en input et le compresse dans le fichier output
 	 * 
 	 * @param fileNameInput
 	 *            le nom du fichier input
@@ -27,23 +32,23 @@ public class Huffman {
 
 		String text = readMessageUnencoded(fileNameInput);
 		if (text.length() == 0) {
-			throw new IllegalArgumentException("Il doit y avoir au moins un caractère");
+			throw new IllegalArgumentException("Il doit y avoir au moins un caract?re");
 		}
-		// On commence par créer un compteur de caractères par le biais d'une
+		// On commence par cr?er un compteur de caract?res par le biais d'une
 		// HashMap
 		CharacterCounter cc = new CharacterCounter();
 		// On ajoute la string pour remplir cette HashMap
 		cc.add(text);
-		// On construit l'arbre à partir des entrées de la HashMap
+		// On construit l'arbre ? partir des entr?es de la HashMap
 		HuffmanNode root = buildTree(cc.getEntries());
-		// On crée une HashMap qui va reprendre pour chaque caractère le
+		// On cr?e une HashMap qui va reprendre pour chaque caract?re le
 		// CharCode correspondant.
 		// Il faut le faire en infixe en principe
 		Map<Character, String> charCodes = new HashMap<Character, String>();
 		generateCode(root, charCodes, "");
-		// On encode le string à partir des charCodes générés
+		// On encode le string ? partir des charCodes g?n?r?s
 		String encodedMessage = encodeMessage(charCodes, text);
-		// On sérialise le string dans un fichier
+		// On s?rialise le string dans un fichier
 		serializeMessage(encodedMessage, fileNameOutput);
 	}
 
@@ -52,7 +57,7 @@ public class Huffman {
 	 * 
 	 * @param fileNameInput
 	 *            le nom du fichier input
-	 * @return le contenu du fichier à lire
+	 * @return le contenu du fichier ? lire
 	 */
 	public String readMessageUnencoded(String fileNameInput) {
 		Fichier fichierR = new Fichier();
@@ -68,7 +73,7 @@ public class Huffman {
 	}
 
 	/**
-	 * Lis le fichier encodé en input et le decompresse dans le fichier output
+	 * Lis le fichier encod? en input et le decompresse dans le fichier output
 	 * 
 	 * @param fileNameInput
 	 *            le nom du fichier input
@@ -96,7 +101,7 @@ public class Huffman {
 	 * @param map
 	 */
 	private HuffmanNode buildTree(Set<Entry<Character, Integer>> entries) {
-		// On créer une file de priorité de caractère avec leur fréquence
+		// On cr?er une file de priorit? de caract?re avec leur fr?quence
 		final Queue<HuffmanNode> nodeQueue = new PriorityQueue<HuffmanNode>(11, new Comparator<HuffmanNode>() {
 			public int compare(HuffmanNode node1, HuffmanNode node2) {
 				return node1.frequency - node2.frequency;
@@ -113,7 +118,7 @@ public class Huffman {
 			final HuffmanNode node1 = nodeQueue.remove();
 			final HuffmanNode node2 = nodeQueue.remove();
 			HuffmanNode node = new HuffmanNode('\0', node1.frequency + node2.frequency, node1, node2);
-			// On ajoute un noeud parent contenant les 2 retirés
+			// On ajoute un noeud parent contenant les 2 retir?s
 			nodeQueue.add(node);
 		}
 		return nodeQueue.remove();
@@ -122,7 +127,7 @@ public class Huffman {
 	/**
 	 * 
 	 * @param node
-	 *            l'élement root de l'arbre
+	 *            l'?lement root de l'arbre
 	 * @param map
 	 *            la map dans lequel on va attribuer les charCodes pour chaque char
 	 * @param s
@@ -133,7 +138,7 @@ public class Huffman {
 			map.put(node.ch, s);
 			return;
 		}
-		// On descend récursivement dans l'arbre de gauche et de droite pour attribuer le hashcode correspondant au char
+		// On descend r?cursivement dans l'arbre de gauche et de droite pour attribuer le hashcode correspondant au char
 		generateCode(node.left, map, s + '0');
 		generateCode(node.right, map, s + '1');
 	}
@@ -141,9 +146,9 @@ public class Huffman {
 	/**
 	 * 
 	 * @param charCode
-	 *            Le code binaire correspondant à chaque caractère
+	 *            Le code binaire correspondant ? chaque caract?re
 	 * @param sentence
-	 *            Le string à encoder
+	 *            Le string ? encoder
 	 * @return Retourne la string sous forme de code binaire.
 	 */
 	private String encodeMessage(Map<Character, String> charCode, String sentence) {
@@ -158,7 +163,7 @@ public class Huffman {
 	/**
 	 * 
 	 * @param encodedMessage
-	 *            le texte encodé
+	 *            le texte encod?
 	 * @param fileNameOutput
 	 *            le nom du fichier output
 	 * @throws IOException
@@ -190,8 +195,8 @@ public class Huffman {
 	/**
 	 * 
 	 * @param fileNameInput
-	 *            le nom du fichier encodé en input
-	 * @return texte décodé
+	 *            le nom du fichier encod? en input
+	 * @return texte d?cod?
 	 * @throws IOException
 	 */
 	private String decodeMessage(String fileNameInput) throws IOException {
