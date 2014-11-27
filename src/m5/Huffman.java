@@ -169,25 +169,24 @@ public class Huffman {
 	 * @throws IOException
 	 */
 	private void serializeMessage(String encodedMessage, String fileNameOutput) throws IOException {
-		final BitSet bitSet = getBitSet(encodedMessage);
+		final boolean[] bitSet = getBitSet(encodedMessage);
 		OutputBitStream obs = new OutputBitStream(fileNameOutput);
-		for (byte bit : bitSet.toByteArray()) {
-			obs.write(bit);
+		for(int i = 0 ; i<bitSet.length ; i++){
+			System.out.println("hello");
+			obs.write(bitSet[i]);
 		}
 		obs.close();
 	}
 
-	private BitSet getBitSet(String message) {
-		BitSet bitSet = new BitSet();
+	private boolean[] getBitSet(String message) {
+		boolean[] bitSet = new boolean[message.length()];
+		boolean bit_1 = true;
+		boolean bit_0 = false;
 		int i = 0;
 		for (i = 0; i < message.length(); i++) {
-			if (message.charAt(i) == '0') {
-				bitSet.set(i, false);
-			} else {
-				bitSet.set(i, true);
-			}
+			boolean b = (message.charAt(i) != '0') ? bit_1 : bit_0;
+			bitSet[i] = b;
 		}
-		bitSet.set(i, true); // dummy bit set to know the length
 		return bitSet;
 	}
 
