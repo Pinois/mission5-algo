@@ -1,8 +1,9 @@
 package m5;
 import java.io.IOException;
-import java.util.BitSet;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
@@ -15,6 +16,8 @@ import m5.io.OutputBitStream;
 
 public class Huffman {
 
+	private String header;
+	
 	public Huffman() {
 	}
 
@@ -41,6 +44,8 @@ public class Huffman {
 		cc.add(text);
 		// On construit l'arbre ? partir des entr?es de la HashMap
 		HuffmanNode root = buildTree(cc.getEntries());
+		header = Integer.toBinaryString(cc.getEntries().size());
+		header(root);
 		// On cr?e une HashMap qui va reprendre pour chaque caract?re le
 		// CharCode correspondant.
 		// Il faut le faire en infixe en principe
@@ -48,9 +53,45 @@ public class Huffman {
 		generateCode(root, charCodes, "");
 		// On encode le string ? partir des charCodes g?n?r?s
 		String encodedMessage = encodeMessage(charCodes, text);
-		System.out.println("Message compresse : "+encodedMessage);
+		//System.out.println("Message compresse : "+encodedMessage);
 		// On s?rialise le string dans un fichier
-		serializeMessage(encodedMessage, fileNameOutput);
+		serializeMessage(header+encodedMessage, fileNameOutput);
+	}
+
+	/**
+	 * Transforme un string en chaine de bits
+	 */
+	private String stringToBinary(String s){
+		byte[] bytes = s.getBytes();
+		StringBuilder binary = new StringBuilder();
+		for (byte b : bytes)
+		{
+			int val = b;
+			for (int i = 0; i < 8; i++)
+			{
+				binary.append((val & 128) == 0 ? 0 : 1);
+				val <<= 1;
+			}
+		}
+		return binary.toString();
+	}
+
+	/**
+	 * Contruit le header du fichier de compression
+	 * @param root
+	 */
+	private void header(HuffmanNode root)
+	{
+	  if(root == null) {
+		  return;
+	  }
+
+	  if(root.ch == '\0')
+		  header = header+"0";
+	  else
+		  header = header+"1"+stringToBinary(String.valueOf(root.ch));
+	  header(root.left);
+	  header(root.right);
 	}
 
 	/**
@@ -103,11 +144,25 @@ public class Huffman {
 	 */
 	private HuffmanNode buildTree(Set<Entry<Character, Integer>> entries) {
 		// On cr?er une file de priorit? de caract?re avec leur fr?quence
-		final Queue<HuffmanNode> nodeQueue = new PriorityQueue<HuffmanNode>(11, new Comparator<HuffmanNode>() {
+		final Queue<HuffmanNode> nodeQueue = new PriorityQueue<HuffmanNode>(entries.size(), new Comparator<HuffmanNode>() {
 			public int compare(HuffmanNode node1, HuffmanNode node2) {
-				return node1.frequency - node2.frequency;
+				if(node1.frequency < node2.frequency)
+					return -1;
+				else if(node1.frequency > node2.frequency)
+					return 1;
+				else{
+					if(node1.ch == '\0' || node2.ch == '\0')
+						return -1;
+					else if((int)node1.ch < (int)node2.ch)
+						return -1;
+					else if((int)node1.ch > (int)node2.ch)
+						return 1;
+					else
+						return 0;
+				}
 			}
 		});
+
 		// On ajoute tous les noeuds dans la priority queue
 		for (Entry<Character, Integer> entry : entries) {
 			nodeQueue.add(new HuffmanNode(entry.getKey(), entry.getValue(), null, null));
@@ -173,7 +228,6 @@ public class Huffman {
 		final boolean[] bitSet = getBitSet(encodedMessage);
 		OutputBitStream obs = new OutputBitStream(fileNameOutput);
 		for(int i = 0 ; i<bitSet.length ; i++){
-			System.out.println("hello");
 			obs.write(bitSet[i]);
 		}
 		obs.close();

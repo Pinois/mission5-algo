@@ -1,7 +1,10 @@
 package m5;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Keeps a running count of how many times each unique character is seen.
@@ -56,5 +59,29 @@ public class CharacterCounter {
 	 */
 	public Set<Map.Entry<Character, Integer>> getEntries() {
 		return counts.entrySet();
+	}
+	
+	public Set<Entry<Character, Integer>> getSortedEntries() {
+		ValueComparator bvc =  new ValueComparator(counts);
+        TreeMap<Character,Integer> sorted_map = new TreeMap<Character,Integer>(bvc);
+        sorted_map.putAll(counts);
+		return sorted_map.entrySet();
+	}
+	
+	class ValueComparator implements Comparator<Character> {
+
+	    Map<Character, Integer> base;
+	    public ValueComparator(Map<Character, Integer> base) {
+	        this.base = base;
+	    }
+
+		@Override
+		public int compare(Character a, Character b) {
+			if (base.get(a) >= base.get(b)) {
+	            return -1;
+	        } else {
+	            return 1;
+	        } // returning 0 would merge keys
+		}
 	}
 }
