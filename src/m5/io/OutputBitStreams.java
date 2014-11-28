@@ -4,13 +4,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class OutputBitStream
+public class OutputBitStreams
 {
 	protected int accumulator;
 	protected OutputStream out;
 	private boolean reset;
 
-	public OutputBitStream(String paramString)
+	public OutputBitStreams(String paramString)
 			throws IOException
 	{
 		this.out = new FileOutputStream(paramString);

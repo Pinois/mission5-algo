@@ -4,12 +4,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class InputBitStream
+public class InputBitStreams
 {
 	protected int accumulator;
 	protected InputStream in;
 
-	public InputBitStream(String paramString)
+	public InputBitStreams(String paramString)
 			throws IOException
 	{
 		this.in = new FileInputStream(paramString);

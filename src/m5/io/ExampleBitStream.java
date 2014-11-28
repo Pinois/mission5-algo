@@ -16,8 +16,8 @@ import java.io.*;
  * Exemple d'utilisation :
  * java ExampleBitStream monFichier 1234678 1 0 0 1 0
  *
- * @see InputBitStream
- * @see OutputBitStream
+ * @see InputBitStreams
+ * @see OutputBitStreams
  */
 public class ExampleBitStream {
   public static final boolean BIT_1 = true;
@@ -36,7 +36,7 @@ public class ExampleBitStream {
 	int ivalue = Integer.parseInt(args[1]); // second argument interpr?t? comme un entier
 
 	// Ouverture du flux de sortie
-	OutputBitStream out = new OutputBitStream(filename);
+	OutputBitStreams out = new OutputBitStreams(filename);
 
 	// Ecriture bit ? bit de l'entier lu (32 bits ?crits)
 	out.write(ivalue);
@@ -57,7 +57,7 @@ public class ExampleBitStream {
 	/* --------------------------------------------------- */
 
 	// Ouverture d'un flux d'entr?e
-	InputBitStream in = new InputBitStream(filename);
+	InputBitStreams in = new InputBitStreams(filename);
 
 	// Lecture et impression de l'entier lu
 	System.out.println ("Int value = " + in.readInt());

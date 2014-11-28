@@ -8,9 +8,9 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+import IO.InputBitStream;
 import m5.io.Fichier;
-import m5.io.InputBitStream;
-import m5.io.OutputBitStream;
+import m5.io.OutputBitStreams;
 
 public class Huffman {
 
@@ -226,7 +226,7 @@ public class Huffman {
 	 */
 	private void serializeMessage(String encodedMessage, String fileNameOutput) throws IOException {
 		final boolean[] bitSet = getBitSet(encodedMessage);
-		OutputBitStream obs = new OutputBitStream(fileNameOutput);
+		OutputBitStreams obs = new OutputBitStreams(fileNameOutput);
 		for(int i = 0 ; i<bitSet.length ; i++){
 			System.out.print(bitSet[i] ? 1 : 0);
 			obs.write(bitSet[i]);
@@ -264,7 +264,7 @@ public class Huffman {
 		}
 		nbrL = Integer.parseInt(nbrLettres, 2);
 		HuffmanNode root = new HuffmanNode('\0', 0, null, null);
-		decodeHeader(0, root, in);
+		decodeHeader(root, in);
 		HuffmanNode tempRoot = root;
 		try {
 			// Lecture bit ? bit du flux d'entr?e et impression du bit lu
@@ -285,6 +285,17 @@ public class Huffman {
 			System.out.println("");
 			in.close();
 		}
+		
+		try {
+			  // Lecture bit ? bit du flux d'entr?e et impression du bit lu
+			  while (true) {
+			    boolean resu = in.readBoolean();
+			    System.out.print (resu ? 1 : 0); 
+			  }
+			} catch (IOException e) { // Exception lanc?e notamment en fin de fichier
+			  System.out.println("");
+			  in.close();
+			}
 
 		return result;
 	}
@@ -299,9 +310,9 @@ public class Huffman {
 		return new Character((char)charCode);
 	}
 
-	private void decodeHeader(int nbrLettres, HuffmanNode root, InputBitStream in) throws IOException
+	private void decodeHeader(HuffmanNode root, InputBitStream in) throws IOException
 	{
-		if(nbrLettres == nbrL) {
+		if(root == null) {
 			return;
 		}
 
@@ -309,15 +320,14 @@ public class Huffman {
 
 		if(resu){
 			root.ch = readLetter(in);
-			nbrLettres++;
 		}
 		else{
 			root.left = new HuffmanNode('\0', 0, null, null);
 			root.right = new HuffmanNode('\0', 0, null, null);
 		}
 
-		decodeHeader(nbrLettres, root.left, in);
-		decodeHeader(nbrLettres, root.right, in);
+		decodeHeader(root.left, in);
+		decodeHeader(root.right, in);
 	}
 
 	private class HuffmanNode {
