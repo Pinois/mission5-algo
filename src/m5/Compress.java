@@ -1,6 +1,11 @@
 package m5;
 import java.io.IOException;
 
+/**
+ * 
+ * @author Denis Marinx
+ *
+ */
 public class Compress {
 
 	public static void main(String[] args) {

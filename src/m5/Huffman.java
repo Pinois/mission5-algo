@@ -12,6 +12,12 @@ import IO.InputBitStream;
 import m5.io.Fichier;
 import m5.io.OutputBitStreams;
 
+
+/**
+ * 
+ * @author Ludovic Fastre, Denis Marinx
+ *
+ */
 public class Huffman {
 
 	private String header;

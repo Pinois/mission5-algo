@@ -5,6 +5,8 @@ import java.util.Set;
 
 /**
  * Keeps a running count of how many times each unique character is seen.
+ * 
+ * @author Denis Marinx
  */
 public class CharacterCounter {
 	HashMap<Character, Integer> counts = new HashMap<>();

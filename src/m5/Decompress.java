@@ -1,6 +1,11 @@
 package m5;
 import java.io.IOException;
 
+/**
+ * 
+ * @author Denis Marinx
+ *
+ */
 public class Decompress {
 
 	public static void main(String[] args) {
