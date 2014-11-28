@@ -1,10 +1,7 @@
 package m5;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Keeps a running count of how many times each unique character is seen.

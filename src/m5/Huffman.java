@@ -1,9 +1,7 @@
 package m5;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
@@ -17,7 +15,9 @@ import m5.io.OutputBitStream;
 public class Huffman {
 
 	private String header;
-	
+	private String nbrLettres;
+	int nbrL;
+
 	public Huffman() {
 	}
 
@@ -46,6 +46,7 @@ public class Huffman {
 		HuffmanNode root = buildTree(cc.getEntries());
 		header = Integer.toBinaryString(cc.getEntries().size());
 		header(root);
+		System.out.println(header);
 		// On cr?e une HashMap qui va reprendre pour chaque caract?re le
 		// CharCode correspondant.
 		// Il faut le faire en infixe en principe
@@ -82,16 +83,16 @@ public class Huffman {
 	 */
 	private void header(HuffmanNode root)
 	{
-	  if(root == null) {
-		  return;
-	  }
+		if(root == null) {
+			return;
+		}
 
-	  if(root.ch == '\0')
-		  header = header+"0";
-	  else
-		  header = header+"1"+stringToBinary(String.valueOf(root.ch));
-	  header(root.left);
-	  header(root.right);
+		if(root.ch == '\0')
+			header = header+"0";
+		else
+			header = header+"1"+stringToBinary(String.valueOf(root.ch));
+		header(root.left);
+		header(root.right);
 	}
 
 	/**
@@ -228,6 +229,7 @@ public class Huffman {
 		final boolean[] bitSet = getBitSet(encodedMessage);
 		OutputBitStream obs = new OutputBitStream(fileNameOutput);
 		for(int i = 0 ; i<bitSet.length ; i++){
+			System.out.print(bitSet[i] ? 1 : 0);
 			obs.write(bitSet[i]);
 		}
 		obs.close();
@@ -254,11 +256,51 @@ public class Huffman {
 	 * @throws IOException
 	 */
 	private String decodeMessage(String fileNameInput) throws IOException {
-		InputBitStream ibs = new InputBitStream(fileNameInput);
-		// A COMPLETER
-		ibs.close();
+		InputBitStream in = new InputBitStream(fileNameInput);
+		nbrLettres = "";
+		for(int i = 0 ; i<6 ; i++){
+			boolean resu = in.readBoolean();
+			nbrLettres = nbrLettres+(resu ? 1 : 0);
+		}
+		nbrL = Integer.parseInt(nbrLettres, 2);
+		HuffmanNode root = new HuffmanNode('\0', 0, null, null);
+		decodeHeader(0, root, in);
+		
+		//TODO Ecrire le texte a partir de l'abre root et du code
+		
 		StringBuilder stringBuilder = new StringBuilder();
 		return stringBuilder.toString();
+	}
+
+	private char readLetter(InputBitStream in) throws IOException{
+		String letter = "";
+		for(int i = 0 ; i < 8 ; i++){
+			boolean resu = in.readBoolean();
+			letter = letter+(resu ? 1 : 0);
+		}
+		int charCode = Integer.parseInt(letter, 2);
+		return new Character((char)charCode);
+	}
+
+	private void decodeHeader(int nbrLettres, HuffmanNode root, InputBitStream in) throws IOException
+	{
+		if(nbrLettres == nbrL) {
+			return;
+		}
+
+		boolean resu = in.readBoolean();
+
+		if(resu){
+			root.ch = readLetter(in);
+			nbrLettres++;
+		}
+		else{
+			root.left = new HuffmanNode('\0', 0, null, null);
+			root.right = new HuffmanNode('\0', 0, null, null);
+		}
+
+		decodeHeader(nbrLettres, root.left, in);
+		decodeHeader(nbrLettres, root.right, in);
 	}
 
 	private class HuffmanNode {
