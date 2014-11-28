@@ -126,7 +126,6 @@ public class Huffman {
 	 *             Erreurs relatifs aux fichiers
 	 */
 	public void decompress(String fileNameInput, String fileNameOutput) throws IOException {
-		// A COMPLETER
 		String messageUnEncoded = decodeMessage(fileNameInput);
 		writeMessageUnencoded(fileNameOutput, messageUnEncoded);
 	}
@@ -257,6 +256,7 @@ public class Huffman {
 	 */
 	private String decodeMessage(String fileNameInput) throws IOException {
 		InputBitStream in = new InputBitStream(fileNameInput);
+		String result = "";
 		nbrLettres = "";
 		for(int i = 0 ; i<6 ; i++){
 			boolean resu = in.readBoolean();
@@ -265,11 +265,28 @@ public class Huffman {
 		nbrL = Integer.parseInt(nbrLettres, 2);
 		HuffmanNode root = new HuffmanNode('\0', 0, null, null);
 		decodeHeader(0, root, in);
-		
-		//TODO Ecrire le texte a partir de l'abre root et du code
-		
-		StringBuilder stringBuilder = new StringBuilder();
-		return stringBuilder.toString();
+		HuffmanNode tempRoot = root;
+		try {
+			// Lecture bit ? bit du flux d'entr?e et impression du bit lu
+			while (true) {
+				boolean resu = in.readBoolean();
+				if(resu){
+					tempRoot = tempRoot.right;
+				}
+				else{
+					tempRoot = tempRoot.left;
+				}
+				if(tempRoot.ch != '\0'){
+					result = result+tempRoot.ch;
+					tempRoot = root;
+				}
+			}
+		} catch (IOException e) { // Exception lanc?e notamment en fin de fichier
+			System.out.println("");
+			in.close();
+		}
+
+		return result;
 	}
 
 	private char readLetter(InputBitStream in) throws IOException{
